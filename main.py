@@ -56,7 +56,6 @@ def valid_year(year):
 
 
 class MainPage(webapp2.RequestHandler):
-
 	def write_form(self, error=""):
 		self.response.out.write(form % {"error": error})
 
