@@ -1,4 +1,5 @@
 import webapp2
+import cgi
 
 form = '''
 <form method="post"">
@@ -28,65 +29,72 @@ form = '''
 </form>
 '''
 months = ['January',
-	          'February',
-	          'March',
-	          'April',
-	          'May',
-	          'June',
-	          'July',
-	          'August',
-	          'September',
-	          'October',
-	          'November',
-	          'December']
+          'February',
+          'March',
+          'April',
+          'May',
+          'June',
+          'July',
+          'August',
+          'September',
+          'October',
+          'November',
+          'December']
+
 
 def valid_month(month):
     if month.capitalize() in months:
         return month.capitalize()
 
+
 def valid_day(day):
     if day.isdigit() and int(day) in range(1, 31):
         return int(day)
-    else: 
+    else:
         return None
+
 
 def valid_year(year):
     if year.isdigit() and int(year) in range(1900, 2020):
         return int(year)
-    else: 
+    else:
         return None
+
+def escape_html(s):
+    s = cgi.escape(s, quote = True)
+    return s
 
 
 class MainPage(webapp2.RequestHandler):
     def write_form(self, error="", month="", day="", year=""):
-        self.response.out.write(form % {"error": error,
-        	"month": month,
-        	"day": day,
-        	"year": year})
+        self.response.out.write(form % {"error": escape_html(error),
+                                        "month": escape_html(month),
+                                        "day": escape_html(day),
+                                        "year": escape_html(year)})
 
     def get(self):
         self.write_form()
 
     def post(self):
-    	user_month = self.request.get('month')
-    	user_day = self.request.get('day')
-    	user_year = self.request.get('year')
+        user_month = self.request.get('month')
+        user_day = self.request.get('day')
+        user_year = self.request.get('year')
 
-    	month = valid_month(user_month)
-    	day = valid_day(user_day)
-    	year = valid_year(user_year)
+        month = valid_month(user_month)
+        day = valid_day(user_day)
+        year = valid_year(user_year)
 
-    	 
-    	if not (month and day and year):
-    		self.write_form("Data isn't valid!", user_month, user_day, user_year)
-    	else:
-    		self.response.out.write("Thanks, data is valid")
-
-            
+        if not (month and day and year):
+            self.write_form("Data isn't valid!", user_month, user_day, user_year)
+        else:
+            self.redirect("/thanks")
 
 
+class Thanks(webapp2.RequestHandler):
+    def get(self):
+        self.response.out.write("Thanks, data is valid")
 
-
-app = webapp2.WSGIApplication([('/', MainPage)], debug=True)
+app = webapp2.WSGIApplication([('/', MainPage),
+                               ('/thanks', Thanks)], debug=True)
 
 
