@@ -16,16 +16,19 @@ form = '''
 
 def caesar(text):
     a = ["a", "b" ,"c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
-    cypher = []
+    cipher = []
     for i in text:
-        ind = a.index(i)
-        try:
-            bukva = a[ind+13]
-        except:
-            bukva = a[ind-13]
-
-        cypher.append(bukva)
-    return ''.join(cypher)
+        if i in a:
+            ind = a.index(i)
+            try:
+                bukva = a[ind+13]
+            except:
+                bukva = a[ind-13]
+            cipher.append(bukva)
+        else:
+            bukva = i
+            cipher.append(bukva)
+    return ''.join(cipher)
 
 
 def escape_html(s):
@@ -36,7 +39,7 @@ def escape_html(s):
 class MainPage(webapp2.RequestHandler):
 
     def get(self):
-        self.response.out.write(form)
+        self.response.out.write("Hello")
 
 
 class Rot(webapp2.RequestHandler):
@@ -49,9 +52,10 @@ class Rot(webapp2.RequestHandler):
 
     def post(self):
         user_text = self.request.get('text')
-        escaped_text = escape_html(user_text)
-        rot_text = caesar(escaped_text)
-        self.write_form(rot_text)
+
+        rot_text = caesar(user_text)
+        escaped_rot = escape_html(rot_text)
+        self.write_form(escaped_rot)
 
 
 app = webapp2.WSGIApplication([('/', MainPage),
