@@ -36,7 +36,7 @@ def escape_html(s):
 class MainPage(webapp2.RequestHandler):
 
     def get(self):
-        self.response.out.write(form)
+        self.response.out.write("Hello")
 
 
 class Rot(webapp2.RequestHandler):
