@@ -4,40 +4,38 @@ import cgi
 form = '''
 <form method="post">
     <label>
-    ROT13
+    Username
     <br>
-    <textarea name="text" type="text">%(text)s</textarea>
+    <input name="username" type="text" value="%(username)s">
     </label>
     <br>
+
+    <label>
+    Password
+    <br>
+    <input name="password" type="text" value="%(password)s">
+    </label>
+    <br>
+
+    <label>
+    Verify password
+    <br>
+    <input name="verify" type="text" value="%(verify)s">
+    </label>
+    <br>
+
+    <label>
+    E-mail(Optional)
+    <br>
+    <input name="email" type="text" value="%(email)s">
+    </label>
+    <br>
+
     <input type="submit">
 
 </form>
 '''
 
-
-def caesar(text):
-    a = ["a", "b" ,"c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
-    cap_a = [x.upper() for x in a]
-    cipher = []
-    for i in text:
-        if i in a:
-            ind = a.index(i)
-            try:
-                bukva = a[ind+13]
-            except:
-                bukva = a[ind-13]
-            cipher.append(bukva)
-        elif i in cap_a:
-            ind = cap_a.index(i)
-            try:
-                bukva = cap_a[ind+13]
-            except:
-                bukva = cap_a[ind-13]
-            cipher.append(bukva)
-        else:
-            bukva = i
-            cipher.append(bukva)
-    return ''.join(cipher)
 
 
 def escape_html(s):
@@ -51,10 +49,13 @@ class MainPage(webapp2.RequestHandler):
         self.response.out.write("Hello")
 
 
-class Rot(webapp2.RequestHandler):
+class SignUp(webapp2.RequestHandler):
 
-    def write_form(self, text=""):
-        self.response.out.write(form % {"text": text})
+    def write_form(self, username="", password="", verify="", email=""):
+        self.response.out.write(form % {"username": username,
+                                        "password": password,
+                                        "verify": verify,
+                                        "email": email})
 
     def get(self):
         self.write_form()
@@ -68,4 +69,4 @@ class Rot(webapp2.RequestHandler):
 
 
 app = webapp2.WSGIApplication([('/', MainPage),
-                               ('/unit2/rot13', Rot)], debug=True)
+                               ('/unit2/signup', SignUp)], debug=True)
